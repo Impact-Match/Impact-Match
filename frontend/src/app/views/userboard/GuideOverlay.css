@@ -1,0 +1,8 @@
+@media screen and (max-width: 900px) {
+    .guide-container .guide-overlay {
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        min-width: 270px;
+    }
+}

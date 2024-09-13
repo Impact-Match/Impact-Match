@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 30" fill="none" x="0px" y="0px">
+    <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M17.5854 2C17.8506 2 18.1049 2.10536 18.2925 2.29289L21.7071 5.70753C22.0976 6.09805 22.0976 6.73122 21.7071 7.12174L11.4632 17.3656C11.2978 17.5311 11.0796 17.6333 10.8466 17.6544L7.09054 17.9959C6.79498 18.0228 6.50275 17.917 6.2929 17.7071C6.08304 17.4973 5.97724 17.205 6.00411 16.9095L6.34557 13.1534C6.36675 12.9204 6.46894 12.7022 6.63436 12.5368L16.8783 2.29289C17.0658 2.10536 17.3202 2 17.5854 2ZM15.9264 6.07317L17.9268 8.07359L19.5858 6.41463L17.5854 4.41421L15.9264 6.07317ZM16.5126 9.48781L14.5122 7.48738L8.30458 13.695L8.10454 15.8955L10.305 15.6954L16.5126 9.48781Z"
+          fill="black"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M15 22H3V20H15V22Z" fill="black"/>
+    <text x="0" y="39" fill="#000000" font-size="5px" font-weight="bold"
+          font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">Created by SuperNdre
+    </text>
+    <text x="0" y="44" fill="#000000" font-size="5px" font-weight="bold"
+          font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">from the Noun Project
+    </text>
+</svg>

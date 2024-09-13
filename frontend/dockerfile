@@ -1,0 +1,29 @@
+# 在.env修改url为部署好的后端 默认值是本地：http://127.0.0.1:8080/
+# https://back.noviboxweb.com/
+
+# 使用 Node.js 官方镜像作为基础镜像
+FROM node:14
+
+# 设置容器内的工作目录
+WORKDIR /app
+
+# 复制 package.json 和 package-lock.json (如果有)
+COPY package*.json ./
+
+# 安装项目依赖
+RUN npm install
+
+# 复制项目文件到工作目录
+COPY . .
+
+# 构建生产版本
+RUN npm run build
+
+# 安装 serve 以运行生产构建的应用
+RUN npm install -g serve
+
+# 设置容器对外开放的端口
+EXPOSE 5000
+
+# 运行 serve 来提供静态文件
+CMD ["serve", "-s", "build", "-l", "5000"]
