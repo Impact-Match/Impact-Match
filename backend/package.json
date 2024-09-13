@@ -1,0 +1,12 @@
+{
+    "name": "@project/backend",
+    "private": true,
+    "version": "0.0.0",
+    "workspaces": [
+        "packages/*",
+        "apps/*"
+    ],
+    "dependencies": {
+        "bun": "latest"
+    }
+}
