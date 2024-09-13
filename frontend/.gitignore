@@ -1,3 +1,8 @@
-
+# Node modules
 /node_modules
+
+# Lock file
 package-lock.json
+
+# OS or IDE specific files
+.DS_Store
