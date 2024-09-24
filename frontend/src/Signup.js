@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import icon from './assets/ImpactMatchLogo_Transparent.png';
+import googleIcon from './assets/google.png'; 
+
 
 const Signup = () => {
     const [userType, setUserType] = useState('student');
@@ -72,6 +74,12 @@ const Signup = () => {
                                     Sign Up
                                 </button>
                             </div>
+                            <div className="flex justify-center mt-4">
+                                <button className="w-2/5 py-2 flex items-center justify-center bg-white text-black border border-gray-300 rounded-2xl text-sm">
+                                    <img src={googleIcon} alt="Google Icon" className="w-5 h-5 mr-2" />
+                                    Sign in with Google
+                                </button>
+                            </div>
                         </form>
                     ) : (
                         <form className="w-full space-y-4">
@@ -109,6 +117,12 @@ const Signup = () => {
                                     className="w-2/5 py-2 bg-lightBlue text-black rounded-2xl text-sm mt-6"
                                 >
                                     Sign Up
+                                </button>
+                            </div>
+                            <div className="flex justify-center mt-4">
+                                <button className="w-2/5 py-2 flex items-center justify-center bg-white text-black border border-gray-300 rounded-2xl text-sm">
+                                    <img src={googleIcon} alt="Google Icon" className="w-5 h-5 mr-2" />
+                                    Sign in with Google
                                 </button>
                             </div>
                         </form>
