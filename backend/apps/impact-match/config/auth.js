@@ -1,33 +1,100 @@
-// auth.js
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-require('dotenv').config();
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const bcrypt = require("bcrypt");
+const pool = require("../db"); // Adjust this to your DB connection file
+require("dotenv").config();
 
-// Replace with your Google Client ID and Secret from the Google Developer Console
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+const { v4: uuidv4 } = require("uuid"); // Import the uuid library
+// Local Strategy for Passport (email/password login)
+passport.use(
+  new LocalStrategy(
+    { usernameField: "email" }, // Using email instead of the default 'username'
+    async (email, password, done) => {
+      try {
+        // Check if the user exists in the database
+        const result = await pool.query(
+          "SELECT * FROM users WHERE email = $1",
+          [email]
+        );
 
-// Configure Passport to use Google OAuth
-passport.use(new GoogleStrategy({
-    clientID: GOOGLE_CLIENT_ID,
-    clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "/auth/google/callback"
-  },
-  function (accessToken, refreshToken, profile, done) {
-    // Logic to handle user after successful authentication
-    const user = { id: profile.id, email: profile.emails[0].value, displayName: profile.displayName };
-    return done(null, user);
-  }
-));
+        if (result.rows.length === 0) {
+          return done(null, false, { message: "Incorrect email or password" });
+        }
 
-// Serialize and deserialize user (for session management)
+        const user = result.rows[0];
+
+        // Compare the hashed password in the database with the provided password
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+
+        if (!isMatch) {
+          return done(null, false, { message: "Incorrect email or password" });
+        }
+
+        // If the password is correct, return the user
+        return done(null, user);
+      } catch (err) {
+        return done(err);
+      }
+    }
+  )
+);
+
+// Google Strategy for Passport (Google OAuth login)
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/auth/google/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        // Check if the user exists in the database using the Google ID
+        const result = await pool.query(
+          "SELECT * FROM users WHERE google_id = $1",
+          [profile.id]
+        );
+
+        if (result.rows.length === 0) {
+          // If the user doesn't exist, create a new user in the database
+          const newUser = await pool.query(
+            "INSERT INTO users (email, password_hash, google_id, full_name, role, is_verified) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+            [
+              profile.emails[0].value,
+              null, // No password hash for OAuth users
+              profile.id,
+              profile.displayName,
+              "student",
+              false,
+            ]
+          );
+
+          return done(null, newUser.rows[0]); // Return the newly created user
+        }
+
+        // If the user exists, return the existing user
+        return done(null, result.rows[0]); // Return the existing user
+      } catch (err) {
+        return done(err);
+      }
+    }
+  )
+);
+
+// Serialize user into the session (works for both local and Google logins)
 passport.serializeUser((user, done) => {
-  done(null, user);
+  done(null, user.id); // Serialize user ID into session
 });
 
-passport.deserializeUser((user, done) => {
-  done(null, user);
+// Deserialize user from the session (works for both local and Google logins)
+passport.deserializeUser(async (id, done) => {
+  try {
+    const result = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+    done(null, result.rows[0]); // Attach user object to `req.user`
+  } catch (err) {
+    done(err, null);
+  }
 });
 
-// Export the passport configuration
 module.exports = passport;
