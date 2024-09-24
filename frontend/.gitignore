@@ -6,3 +6,6 @@ package-lock.json
 
 # OS or IDE specific files
 .DS_Store
+
+# Ignore the build folder
+/build
