@@ -17,23 +17,29 @@ const Login = () => {
                 <div className="w-full md:w-3/5 p-10 flex flex-col items-center justify-center">
                     {/* Ensure padding aligns with input boxes */}
                     <div className="w-[55%]">
-                        <h2 className="text-2xl mb-6 text-black font-inter text-left">Log In</h2>
+                        <h2 className="text-2xl mb-6 text-black font-bold font-inter text-left">Log In</h2>
                         <p className="text-sm mb-6 text-gray-400 text-left">
-                            Don't have an account? <Link to="/signup" className="text-lightBlue inline-block">Sign Up</Link>
+                            Don't have an account? 
+                            <Link 
+                                to="/signup" 
+                                className="text-lightBlue hover:text-blue-500 focus:text-blue-500 active:text-blue-700 inline-block"
+                            >
+                                Sign Up
+                            </Link>
                         </p>
                     </div>
 
                     {/* Form */}
                     <form className="w-[55%] space-y-6">
                         <div className="flex flex-col">
-                            <label className="text-gray-400 text-left mb-1 text-[10px]">PLEASE ENTER YOUR USERNAME/EMAIL</label>
+                            <label className="text-gray-400 text-left mb-1 text-[10px] pl-2">PLEASE ENTER YOUR USERNAME/EMAIL</label>
                             <input 
                                 type="text" 
                                 className="w-full py-1.5 px-2 rounded-2xl bg-gray-100" 
                             />
                         </div>
                         <div className="flex flex-col">
-                            <label className="text-gray-400 text-left mb-1 text-[10px]">PLEASE ENTER YOUR PASSWORD</label>
+                            <label className="text-gray-400 text-left mb-1 text-[10px] pl-2">PLEASE ENTER YOUR PASSWORD</label>
                             <input 
                                 type="password" 
                                 className="w-full py-1.5 px-2 rounded-2xl bg-gray-100" 
@@ -46,7 +52,7 @@ const Login = () => {
                                 <input type="checkbox" id="remember" className="mr-2" />
                                 <label htmlFor="remember" className="text-gray-400">Remember Me</label>
                             </div>
-                            <Link to="/forgot-password" className="text-lightBlue">
+                            <Link to="/forgot-password" className="text-lightBlue hover:text-blue-500 focus:text-blue-500 active:text-blue-700">
                                 Forgot password?
                             </Link>
                         </div>
@@ -55,7 +61,7 @@ const Login = () => {
                         <div className="flex justify-center">
                             <button
                                 type="button"
-                                className="w-full py-1.5 px-2 text-black bg-white border border-gray-400 rounded-2xl text-sm flex items-center justify-center mt-6"
+                                className="w-full py-1.5 px-2 text-black bg-white border border-gray-400 rounded-2xl text-sm flex items-center justify-center mt-6 transition-shadow duration-150 hover:shadow-lg active:shadow-inner active:bg-gray-200"
                             >
                                 <img src={googleIcon} alt="Google" className="w-4 h-4 mr-2" />
                                 Sign in with Google
@@ -66,7 +72,7 @@ const Login = () => {
                         <div className="flex justify-center">
                             <button
                                 type="submit"
-                                className="w-full py-1.5 px-2 bg-lightBlue text-white rounded-2xl text-sm"
+                                className="w-full py-1.5 px-2 bg-lightBlue text-white rounded-2xl text-sm transition-shadow duration-150 hover:bg-blue-600 active:bg-gradient-to-r from-blue-500 to-blue-700 active:shadow-inner"
                             >
                                 Log In
                             </button>
