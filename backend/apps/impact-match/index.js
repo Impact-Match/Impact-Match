@@ -7,7 +7,7 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
 const app = express();
-const port = 3000;
+const port = 8000;
 
 // Swagger configuration
 const swaggerOptions = {
@@ -20,7 +20,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: "http://localhost:3000", // Your API server URL
+        url: "http://localhost:8000", // Your API server URL
       },
     ],
   },
