@@ -285,9 +285,10 @@ router.post(
  *                   type: string
  *                   example: "Invalid token"
  */
-router.post("/verify-email", async (req, res) => {
+router.get("/verify-email", async (req, res) => {
   const token = req.query.token;
 
+  console.log("token: " + token);
   if (!token) {
     return res.status(400).json({ error: "Invalid token" });
   }
