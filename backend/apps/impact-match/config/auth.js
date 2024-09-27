@@ -23,7 +23,9 @@ passport.use(
         }
 
         const user = result.rows[0];
-
+        if (user.is_verified === false) {
+          return done(null, false, { message: "Please verify your email" });
+        }
         // Compare the hashed password in the database with the provided password
         const isMatch = await bcrypt.compare(password, user.password_hash);
 
@@ -91,6 +93,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (id, done) => {
   try {
     const result = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+
     done(null, result.rows[0]); // Attach user object to `req.user`
   } catch (err) {
     done(err, null);
