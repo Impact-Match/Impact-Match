@@ -4,6 +4,19 @@ const bcrypt = require("bcrypt"); // For hashing passwords
 const router = express.Router();
 const pool = require("../db"); // Import the database connection
 const { body, validationResult } = require("express-validator");
+const nodeMailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
+
+const { checkExistUser, generateVerificationToken } = require("../util/util"); // Import the function to check if a user exists
+// Configure the email transporter (using Gmail or any other email service)
+//!!!https://support.google.com/mail/answer/185833?hl=en  create app password for gmail using this as EMAIL_PASSWORD
+const transporter = nodeMailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER, // Your email
+    pass: process.env.EMAIL_PASSWORD, // Your email password
+  },
+});
 
 /**
  * @swagger
@@ -113,11 +126,8 @@ router.post(
 
     try {
       // Check if the user already exists
-      const existingUser = await pool.query(
-        "SELECT * FROM users WHERE email = $1",
-        [email]
-      );
-      if (existingUser.rows.length > 0) {
+
+      if (await checkExistUser(email)) {
         return res.status(400).json({ error: "User already exists" });
       }
 
@@ -130,7 +140,26 @@ router.post(
         [email, password_hash, full_name, role]
       );
 
-      res.status(201).json({ message: "User registered successfully" });
+      const token = generateVerificationToken(email);
+
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Account Verification Token",
+        text: `Click the link to verify your email: http://localhost:8000/auth/verify-email?token=${token}`,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log(error, "mail snet error");
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+      res.status(201).json({
+        message:
+          "User registered successfully. Please check your email to verify your account.",
+      });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal server error" });
@@ -350,7 +379,7 @@ router.post(
         from: process.env.EMAIL_USER,
         to: email,
         subject: "Reset Your Password",
-        text: `Click the link to reset your password: http://localhost:3000/auth/reset-password?token=${token}`,
+        text: `Click the link to reset your password: http://localhost:3000/auth/reset-password?token=${token}`
       };
 
       transporter.sendMail(mailOptions, (error, info) => {
