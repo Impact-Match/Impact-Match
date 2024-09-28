@@ -1,57 +1,93 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import icon from './assets/ImpactMatchLogo_Transparent.png';
+import LeftSection from './LeftSection';
 
 const ResetPassword = () => {
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (newPassword.length < 6) {
+            setError('Password must be at least 6 characters long.');
+        } else if (newPassword !== confirmPassword) {
+            setError('Passwords do not match.');
+        } else {
+            setError('');
+            // Submission logic here
+        }
+    };
+
     return (
         <div className="flex justify-center items-center h-screen">
-            <div className="flex flex-col md:flex-row w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
+            <div className="flex flex-col md:flex-row w-full bg-white">
                 {/* Left Section */}
-                <div className="w-full md:w-2/5 bg-darkBlue text-white p-10 flex flex-col justify-center items-center min-h-[700px]">
-                    <img src={icon} alt="Impact Match Logo" className="w-32 h-32 mb-4" />
-                    <h1 className="text-2xl font-inter">Impact Match</h1>
-                </div>
+                <LeftSection />
 
                 {/* Right Section */}
-                <div className="w-full md:w-3/5 p-10 flex flex-col items-center justify-center">
+                <div className="w-full md:w-2/3 p-10 flex flex-col items-center justify-center">
                     {/* Content */}
                     <div className="w-[55%]">
                         <h2 className="text-2xl mb-6 text-black font-bold font-inter text-left">Reset Your Password</h2>
-                        <p className="text-sm mb-6 text-gray-400 text-left">
+                        <p className="text-sm mb-6 text-gray-500 text-left">
                             Please enter your new password below to reset your account password.
                         </p>
                     </div>
 
                     {/* Form */}
-                    <form className="w-[55%] space-y-6">
-                        <div className="flex flex-col">
-                            <label htmlFor="new-password" className="text-gray-400 text-left mb-1 text-[10px] pl-2">
+                    <form className="w-[55%] space-y-6" onSubmit={handleSubmit}>
+                        {/* New Password Input */}
+                        <div className="flex flex-col relative">
+                            <label htmlFor="new-password" className="text-gray-600 text-left mb-1 text-[10px] pl-2">
                                 NEW PASSWORD
                             </label>
-                            <input 
-                                type="password" 
+                            <input
+                                type={showNewPassword ? 'text' : 'password'}
                                 id="new-password"
-                                className="w-full py-1.5 px-2 rounded-2xl bg-gray-100" 
-                                placeholder="New Password"
+                                className="w-full py-1.5 px-2 rounded-2xl bg-gray-100"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
                             />
+                            <button
+                                type="button"
+                                className="absolute right-3 top-[65%] transform -translate-y-[45%] text-gray-400 text-xl"
+                                onClick={() => setShowNewPassword(!showNewPassword)}
+                            >
+                                {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                            </button>
+                            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
                         </div>
-                        <div className="flex flex-col">
-                            <label htmlFor="confirm-password" className="text-gray-400 text-left mb-1 text-[10px] pl-2">
-                                CONFRIM NEW PASSWORD
+
+                        {/* Confirm Password Input */}
+                        <div className="flex flex-col relative">
+                            <label htmlFor="confirm-password" className="text-gray-600 text-left mb-1 text-[10px] pl-2">
+                                CONFIRM NEW PASSWORD
                             </label>
-                            <input 
-                                type="password" 
+                            <input
+                                type={showConfirmPassword ? 'text' : 'password'}
                                 id="confirm-password"
-                                className="w-full py-1.5 px-2 rounded-2xl bg-gray-100" 
-                                placeholder="Confirm Password"
+                                className="w-full py-1.5 px-2 rounded-2xl bg-gray-100"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
                             />
+                            <button
+                                type="button"
+                                className="absolute right-3 top-[65%] transform -translate-y-[45%] text-gray-400 text-xl"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                            </button>
                         </div>
 
                         {/* Reset Password Button */}
                         <div className="flex justify-center">
                             <button
                                 type="submit"
-                                className="w-full py-1.5 px-2 bg-lightBlue text-white rounded-2xl text-sm transition-shadow duration-150 hover:bg-blue-600 active:bg-gradient-to-r from-blue-500 to-blue-700 active:shadow-inner"
+                                className="w-full py-1.5 px-2 bg-darkBlue text-white rounded-2xl text-sm transition-shadow duration-150 hover:bg-blue-800 active:bg-blue-900 active:shadow-inner"
                             >
                                 Reset Password
                             </button>
@@ -62,10 +98,7 @@ const ResetPassword = () => {
                     <div className="w-[55%] mt-6 text-center">
                         <p className="text-gray-400 text-sm">
                             Already have an account? 
-                            <Link 
-                                to="/login" 
-                                className="text-lightBlue hover:text-blue-500 focus:text-blue-500 active:text-blue-700 inline-block ml-1"
-                            >
+                            <Link to="/login" className="text-darkBlue hover:underline focus:underline active:text-blue-900 inline-block ml-1">
                                 Log In
                             </Link>
                         </p>
