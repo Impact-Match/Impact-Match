@@ -1,44 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import icon from './assets/ImpactMatchLogo_Transparent.png';
-import googleIcon from './assets/google.png';
+import LeftSection from './LeftSection';
 
 const ForgetPassword = () => {
+    const [email, setEmail] = useState('');  // State to store the input email
+    const [error, setError] = useState('');  // State to store error messages
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!emailPattern.test(email)) {
+            setError('Please enter a valid email address.');  // Set error if email format is invalid
+        } else {
+            setError('');  // Clear error message
+            // Add logic to send reset link here
+        }
+    };
+
     return (
-        <div className="flex justify-center items-center h-screen">
-            <div className="flex flex-col md:flex-row w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
+        <div className="flex justify-center items-center min-h-screen">
+            <div className="flex flex-col md:flex-row w-full bg-white">
                 {/* Left Section */}
-                <div className="w-full md:w-2/5 bg-darkBlue text-white p-10 flex flex-col justify-center items-center min-h-[700px]">
-                    <img src={icon} alt="Impact Match Logo" className="w-32 h-32 mb-4" />
-                    <h1 className="text-2xl font-inter">Impact Match</h1>
-                </div>
+                <LeftSection />
 
                 {/* Right Section - Forget Password Form */}
-                <div className="w-full md:w-3/5 p-10 flex flex-col items-center justify-center">
-                    {/* Ensure padding aligns with input boxes */}
-                    <div className="w-[55%]">
-                        <h2 className="text-2xl mb-6 text-black font-bold font-inter text-left">Forgot Password</h2>
-                        <p className="text-sm mb-6 text-gray-400 text-left">
+                <div className="w-full md:w-2/3 p-10 flex flex-col items-center justify-center">
+                    <div className="w-[80%] md:w-[55%]">
+                        <h2 className="text-2xl md:text-3xl mb-6 text-black font-bold font-inter text-left">Forgot Password</h2>
+                        <p className="text-sm md:text-base mb-6 text-gray-500 text-left">
                             Don't worry! Just enter your email below and we will send you a reset link.
                         </p>
                     </div>
 
                     {/* Forget Password Form */}
-                    <form className="w-[55%] space-y-6">
+                    <form className="w-[80%] md:w-[55%] space-y-6" onSubmit={handleSubmit}>
                         <div className="flex flex-col">
-                            <label className="text-gray-400 text-left mb-1 text-[10px] pl-2">PLEASE ENTER YOUR EMAIL ADDRESS</label>
+                            <label className="text-gray-600 text-left mb-1 text-[10px] md:text-sm pl-2">PLEASE ENTER YOUR EMAIL ADDRESS</label>
                             <input 
-                                type="email" 
-                                className="w-full py-1.5 px-2 rounded-2xl bg-gray-100" 
-                                placeholder="Email"
+                                type="text" 
+                                className="w-full py-2 px-3 rounded-full bg-gray-100 text-base"  // 使用相对单位
+                                value={email}  // Bind email input field
+                                onChange={(e) => setEmail(e.target.value)}  // Update email state
                             />
+                            {/* Error message with red color */}
+                            {error && <p className="text-red-500 text-sm mt-1 text-left">{error}</p>}
                         </div>
 
                         {/* Reset Password Button */}
                         <div className="flex justify-center">
                             <button
                                 type="submit"
-                                className="w-full py-1.5 px-2 bg-lightBlue text-white rounded-2xl text-sm transition-shadow duration-150 hover:bg-blue-600 active:bg-gradient-to-r from-blue-500 to-blue-700 active:shadow-inner"
+                                className="w-full py-2 px-3 bg-darkBlue text-white rounded-full text-base transition-shadow duration-150 hover:bg-blue-800 active:bg-blue-900 active:shadow-inner"
                             >
                                 Send Reset Link
                             </button>
@@ -46,12 +59,12 @@ const ForgetPassword = () => {
                     </form>
 
                     {/* Back to Login */}
-                    <div className="w-[55%] mt-6 text-center">
-                        <p className="text-gray-400 text-sm">
+                    <div className="w-[80%] md:w-[55%] mt-6 text-center">
+                        <p className="text-gray-500 text-sm">
                             Remembered your password? 
                             <Link 
                                 to="/login" 
-                                className="text-lightBlue hover:text-blue-500 focus:text-blue-500 active:text-blue-700 inline-block ml-1"
+                                className="text-darkBlue hover:underline focus:underline active:text-blue-900 inline-block ml-1"
                             >
                                 Log In
                             </Link>

@@ -1,11 +1,39 @@
-# Node modules
-/node_modules
+# Ignore node_modules folders
+node_modules/
 
-# Lock file
+# Ignore log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Ignore bun-related files
+.bun/
+
+# Ignore TypeScript build outputs
+dist/
+out/
+build/
+
+# Ignore environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore IDE settings
+.idea/
+.vscode/
+
+# Ignore lock files if you want consistency across machines (if you use them)
 package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-# OS or IDE specific files
+# Ignore temporary OS or IDE specific files
 .DS_Store
+Thumbs.db
 
-# Ignore the build folder
-/build
+# Ignore build files
+bun.lockb

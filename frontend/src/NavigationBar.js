@@ -4,16 +4,16 @@ import icon from './assets/ImpactMatchLogo_Transparent.png';
 
 const NavigationBar = () => {
     return (
-        <nav className="bg-darkBlue h-16 flex items-center justify-between px-6 shadow-md">
+        <nav className="bg-darkBlue h-24 flex items-center justify-between px-10 shadow-md">
             {/* Left Section: Logo + Brand Name */}
             <div className="flex items-center space-x-3">
-                <img src={icon} alt="Impact Match Logo" className="w-10 h-10" />
-                <span className="text-white text-xl font-semibold">Impact Match</span>
+                <img src={icon} alt="Impact Match Logo" className="w-24 h-24" />
+                <span className="text-white text-lg font-semibold">Impact Match</span>
             </div>
 
             {/* Middle Section: Navigation Links */}
-            <div className="border-2 border-white rounded-full px-6 py-1">
-                <ul className="flex space-x-8">
+            <div className="border-2 border-white rounded-full px-20 py-3">
+                <ul className="flex space-x-20">
                     <li>
                         <Link to="/" className="text-white hover:text-blue-300">
                             Home
@@ -41,13 +41,13 @@ const NavigationBar = () => {
             <div className="flex space-x-4">
                 <Link
                     to="/signup"
-                    className="px-4 py-2 text-black bg-lightBlue rounded-lg hover:bg-blue-500 transition"
+                    className="px-4 py-2 text-black bg-lightBlue rounded-3xl hover:bg-blue-500 transition"
                 >
                     Sign Up
                 </Link>
                 <Link
                     to="/login"
-                    className="px-4 py-2 text-black bg-lightBlue rounded-lg hover:bg-blue-500 transition"
+                    className="px-4 py-2 text-black bg-lightBlue rounded-3xl hover:bg-blue-500 transition"
                 >
                     Login
                 </Link>
