@@ -21,7 +21,7 @@ const VerifySuccess = () => {
                 <div className="flex justify-center">
                     <button
                         type="submit"
-                        className="w-48 h-8 py-1.5 px-2 bg-lightBlue text-darkblue rounded-2xl text-sm transition-shadow duration-150 hover:bg-blue-800 hover:text-white active:bg-blue-900 active:shadow-inner"
+                        className="w-48 h-9 py-1.5 px-2 bg-lightBlue text-darkblue rounded-3xl text-sm transition-shadow duration-150 hover:bg-blue-800 hover:text-white active:bg-blue-900 active:shadow-inner"
                     >
                         Finish Account Set Up
                     </button>

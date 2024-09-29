@@ -14,7 +14,7 @@ const ExpiredLink = () => {
                     {/* Content */}
                     <div className="w-[55%]">
                         <h2 className="text-2xl mb-6 text-black font-bold font-inter text-left">Link Expired</h2>
-                        <p className="text-sm mb-6 text-gray-400 text-left">
+                        <p className="text-sm mb-6 text-gray-500 text-left">
                             The password reset link has expired. Please request a new one to reset your password.
                         </p>
                     </div>
@@ -23,7 +23,7 @@ const ExpiredLink = () => {
                     <div className="w-[55%] flex justify-center">
                         <Link 
                             to="/forgot-password"
-                            className="w-full py-1.5 px-2 bg-darkBlue text-white rounded-2xl text-sm transition-shadow duration-150 hover:bg-blue-600 active:bg-gradient-to-r from-blue-500 to-blue-700 active:shadow-inner text-center"
+                            className="w-full h-9 py-1.5 px-2 bg-darkBlue text-white rounded-3xl text-sm transition-shadow duration-150 hover:bg-blue-600 active:bg-gradient-to-r from-blue-500 to-blue-700 active:shadow-inner text-center"
                         >
                             Request New Reset Link
                         </Link>
@@ -31,7 +31,7 @@ const ExpiredLink = () => {
 
                     {/* Back to Login */}
                     <div className="w-[55%] mt-6 text-center">
-                        <p className="text-gray-400 text-sm">
+                        <p className="text-gray-500 text-sm">
                             Remembered your password? 
                             <Link 
                                 to="/login" 

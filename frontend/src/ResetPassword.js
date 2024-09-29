@@ -48,7 +48,7 @@ const ResetPassword = () => {
                             <input
                                 type={showNewPassword ? 'text' : 'password'}
                                 id="new-password"
-                                className="w-full py-1.5 px-2 rounded-2xl bg-gray-100"
+                                className="w-full h-9 py-1.5 px-2 rounded-2xl bg-gray-100"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
                             />
@@ -70,7 +70,7 @@ const ResetPassword = () => {
                             <input
                                 type={showConfirmPassword ? 'text' : 'password'}
                                 id="confirm-password"
-                                className="w-full py-1.5 px-2 rounded-2xl bg-gray-100"
+                                className="w-full h-9 py-1.5 px-2 rounded-2xl bg-gray-100"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                             />
@@ -87,7 +87,7 @@ const ResetPassword = () => {
                         <div className="flex justify-center">
                             <button
                                 type="submit"
-                                className="w-full py-1.5 px-2 bg-darkBlue text-white rounded-2xl text-sm transition-shadow duration-150 hover:bg-blue-800 active:bg-blue-900 active:shadow-inner"
+                                className="w-full h-9 py-1.5 px-2 bg-darkBlue text-white rounded-2xl text-sm transition-shadow duration-150 hover:bg-blue-800 active:bg-blue-900 active:shadow-inner"
                             >
                                 Reset Password
                             </button>

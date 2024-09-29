@@ -37,9 +37,9 @@ const EmailVerification = ({ userEmail }) => {
                         {/* Send Email Button */}
                         <button
                             type="button"
-                            className="py-1.5 px-4 bg-darkBlue text-white rounded-2xl text-sm transition-shadow duration-150 hover:bg-blue-800 active:bg-blue-900 active:shadow-inner"
+                            className="h-9 py-1.5 px-4 bg-darkBlue text-white rounded-3xl text-sm transition-shadow duration-150 hover:bg-blue-800 active:bg-blue-900 active:shadow-inner"
                         >
-                            Send Email
+                            Resend Email
                         </button>
                         
                         {/* Return to Site Link */}
