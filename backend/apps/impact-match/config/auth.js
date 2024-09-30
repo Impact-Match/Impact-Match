@@ -59,20 +59,8 @@ passport.use(
         );
 
         if (result.rows.length === 0) {
-          // If the user doesn't exist, create a new user in the database
-          const newUser = await pool.query(
-            "INSERT INTO users (email, password_hash, google_id, full_name, role, is_verified) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-            [
-              profile.emails[0].value,
-              null, // No password hash for OAuth users
-              profile.id,
-              profile.displayName,
-              "student",
-              false,
-            ]
-          );
-
-          return done(null, newUser.rows[0]); // Return the newly created user
+          // If the user doesn't exist, return an error instead of creating a new user
+          return done(null, false, { message: "User does not exist" });
         }
 
         // If the user exists, return the existing user
