@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import LeftSection from './LeftSection';
+import { useSearchParams } from 'react-router-dom';
+import { backend } from './services/service';
+import axios from 'axios'; 
 
 const ResetPassword = () => {
     const [newPassword, setNewPassword] = useState('');
@@ -9,16 +12,27 @@ const ResetPassword = () => {
     const [error, setError] = useState('');
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [success, setSuccess] = useState('');  // State to show success message
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get('token');  
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
         if (newPassword.length < 6) {
             setError('Password must be at least 6 characters long.');
         } else if (newPassword !== confirmPassword) {
             setError('Passwords do not match.');
+        }
+        else if (!token) {
+            setError('Invalid or missing token.');  // Check if token exists
+            return;
         } else {
-            setError('');
-            // Submission logic here
+            // POST request to the backend to reset the password
+            const response = await axios.post(backend + '/auth/reset-password', { newPassword, token });
+
+            // If successful, show success message
+            setSuccess('Password successfully reset.');
+            setError('');  // Clear error message
         }
     };
 
@@ -60,6 +74,8 @@ const ResetPassword = () => {
                                 {showNewPassword ? <FaEyeSlash /> : <FaEye />}
                             </button>
                             {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+                            {/* Success message with green color */}
+                            {success && <p className="text-green-500 text-sm mt-1 text-left">{success}</p>}
                         </div>
 
                         {/* Confirm Password Input */}
