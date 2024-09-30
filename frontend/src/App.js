@@ -15,9 +15,7 @@ function App() {
     // only for demo signup page, we can change it later
     <Router>
       <div className="App">
-
         <NavigationBar />
-      
         <Routes>
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
