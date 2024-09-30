@@ -23,74 +23,68 @@ const Login = () => {
     };
 
     return (
-        <div className="flex justify-center h-screen">
-            {/* Centered Section (only on x-axis) */}
-            <div className="w-full max-w-md p-10 mt-10 flex flex-col items-center">
-                <div className="w-full">
-                    <h2 className="text-2xl mb-6 text-black font-bold font-inter text-left">Log In</h2>
-                    <p className="text-sm mb-6 text-gray-500 text-left">
-                        Don't have an account? 
-                        <Link 
-                            to="/signup" 
-                            className="text-darkBlue hover:underline focus:underline active:text-blue-900 inline-block ml-1"
-                        >
-                            Sign Up
-                        </Link>
-                    </p >
-                </div>
+        <div className="flex flex-col h-screen w-screen bg-white">
+            <div className="flex-grow flex flex-col justify-center items-center"> 
+                <div className="w-full max-w-md p-10 bg-white">
+                    <h2 className="text-2xl mb-6 text-gray-600 text-left font-bold">Sign In</h2>
+                    <p className="text-sm mb-6 text-gray-400 text-left">
+                        Or{' '}
+                        <Link to="/signup" className="text-lightBlue hover:underline">create an account</Link>
+                    </p>
 
-                {/* Form */}
-                <form className="w-full space-y-6" onSubmit={handleSubmit}>
-                    <div className="flex flex-col">
-                        <label className="text-gray-600 text-left mb-1 text-[10px] pl-2">PLEASE ENTER YOUR USERNAME/EMAIL</label>
-                        <input 
-                            type="text" 
-                            className="w-full h-9 py-1.5 px-2 rounded-3xl bg-gray-100" 
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label className="text-gray-600 text-left mb-1 text-[10px] pl-2">PLEASE ENTER YOUR PASSWORD</label>
-                        <input 
-                            type="password" 
-                            className="w-full h-9 py-1.5 px-2 rounded-3xl bg-gray-100"
-                            value={password}  
-                            onChange={(e) => setPassword(e.target.value)} 
-                        />
-                        {error && <p className="text-red-500 text-sm mt-1">{error}</p >}
-                    </div>
-
-                    {/* Remember Me and Forgot Password */}
-                    <div className="w-full flex justify-between items-center mt-2 text-sm">
-                        <div className="flex items-center">
-                            <input type="checkbox" id="remember" className="mr-1" />
-                            <label htmlFor="remember" className="text-gray-500">Remember Me</label>
+                    {/* Form */}
+                    <form className="space-y-4 ml-10" onSubmit={handleSubmit}>
+                        <div className="flex flex-col">
+                            <input 
+                                type="text" 
+                                placeholder="EMAIL"
+                                className="w-full h-10 px-3 rounded-md border border-gray-300" 
+                                style={{ fontSize: '12px', color: '#d1d5db' }}
+                            />
                         </div>
-                        <Link to="/forgot-password" className="text-darkBlue hover:underline focus:underline active:text-blue-900 inline-block ml-1">
-                            Forgot password?
-                        </Link>
-                    </div>
+                        <div className="flex flex-col">
+                            <input 
+                                type="password" 
+                                placeholder="PASSWORD"
+                                className="w-full h-10 px-3 rounded-md border border-gray-300"
+                                style={{ fontSize: '12px', color: '#d1d5db' }}
+                                value={password}  
+                                onChange={(e) => setPassword(e.target.value)} 
+                            />
+                            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+                        </div>
 
-                    {/* Sign in with Google */}
-                    <div className="flex justify-center">
-                        <button
-                            type="button"
-                            className="w-full h-9 py-1.5 px-2 text-black bg-white border border-gray-400 rounded-3xl text-sm flex items-center justify-center mt-6 transition-shadow duration-150 hover:shadow-lg active:shadow-inner active:bg-gray-200"
-                        >
-                            < img src={googleIcon} alt="Google" className="w-4 h-4 mr-2" />
-                            Sign in with Google
-                        </button>
-                    </div>
+                        {/* Remember Me and Forgot Password */}
+                        <div className="flex justify-between items-center text-sm mt-2">
+                            <div className="flex items-center">
+                                <input type="checkbox" id="remember" className="mr-2" />
+                                <label htmlFor="remember" className="text-gray-600">Remember me</label>
+                            </div>
+                            <Link to="/forgot-password" className="text-lightBlue hover:underline">Forgotten your password?</Link>
+                        </div>
 
-                    {/* Log In Button */}
-                    <div className="flex justify-center">
-                        <button
-                            type="submit"
-                            className="w-full h-9 py-1.5 px-2 bg-darkBlue text-white rounded-3xl text-sm transition-shadow duration-150 hover:bg-blue-800 active:bg-blue-900 active:shadow-inner"
-                        >
-                            Log In
-                        </button>
-                    </div>
-                </form>
+                        {/* Sign In Button */}
+                        <div className="mt-6">
+                            <button
+                                type="submit"
+                                className="w-full h-10 text-white bg-darkBlue hover:bg-blue-700 rounded-md transition"
+                            >
+                                Sign In
+                            </button>
+                        </div>
+
+                        {/* Sign in with Google */}
+                        <div className="mt-4">
+                            <button
+                                type="button"
+                                className="w-full h-10 flex items-center justify-center text-black bg-white border border-gray-300 rounded-md transition hover:bg-gray-100"
+                            >
+                                <img src={googleIcon} alt="Google Icon" className="w-5 h-5 mr-2" />
+                                Sign in with Google
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );
