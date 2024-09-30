@@ -6,6 +6,8 @@ const pool = require("../db"); // Import the database connection
 const { body, validationResult } = require("express-validator");
 const nodeMailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const fs = require('fs');
+const path = require('path');
 
 const { checkExistUser, generateVerificationToken } = require("../util/util"); // Import the function to check if a user exists
 // Configure the email transporter (using Gmail or any other email service)
@@ -141,12 +143,21 @@ router.post(
       );
 
       const token = generateVerificationToken(email);
+      const link = `http://localhost:8000/auth/verify-email?token=${token}`;
+
+      // Read the HTML template from file
+      const templatePath = path.join(__dirname, '../email-verification.html');
+      let htmlContent = fs.readFileSync(templatePath, 'utf-8');
+
+      // Replace placeholders with dynamic values
+      htmlContent = htmlContent.replace('{{username}}', email);
+      htmlContent = htmlContent.replace('{{Link}}', link);
 
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
-        subject: "Account Verification Token",
-        text: `Click the link to verify your email: http://localhost:8000/auth/verify-email?token=${token}`,
+        subject: "Impact Match Account Email Verification",
+        html: htmlContent,
       };
 
       transporter.sendMail(mailOptions, (error, info) => {
@@ -375,12 +386,22 @@ router.post(
 
     try {
       const token = generateVerificationToken(email); // Fixed typo
+      const resetLink = `http://localhost:8000/auth/reset-password?token=${token}`;
+
+      // Read the HTML template from file
+      const templatePath = path.join(__dirname, '../email-password.html');
+      let htmlContent = fs.readFileSync(templatePath, 'utf-8');
+
+      // Replace placeholders with dynamic values
+      htmlContent = htmlContent.replace('{{username}}', email);
+      htmlContent = htmlContent.replace('{{resetLink}}', resetLink);
+
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
         subject: "Reset Your Password",
-        text: `Click the link to reset your password: http://localhost:3000/auth/reset-password?token=${token}`
-      };
+        html: htmlContent,
+      }
 
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
