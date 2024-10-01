@@ -16,7 +16,7 @@ const EmailVerification = ({ userEmail }) => {
                     <div className="w-[70%]">
                         <h2 className="text-2xl text-black text-center mb-8">Please verify your email</h2>
                         <p className="text-black text-sm text-center mb-8">
-                        We have sent a verification link to [Email@gmail.com] <span>{userEmail}</span>.
+                        We have sent a verification link to <span>{userEmail}</span>.
                         </p>
                     </div>
 

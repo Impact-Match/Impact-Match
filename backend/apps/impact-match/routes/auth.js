@@ -238,17 +238,61 @@ router.post(
   body("password")
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long"),
-  (req, res, next) => {
+  async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    passport.authenticate("local", (err, user, info) => {
+    passport.authenticate("local", async (err, user, info) => {
       if (err) {
         return next(err);
       }
       if (!user) {
+        // If user exists but has not verified their email
+        if (info.message === "Please verify your email") {
+          try {
+            const { email } = req.body;
+
+            // Generate verification token
+            const token = generateVerificationToken(email);
+            const link = `http://localhost:3000/verify-result?token=${token}`;
+
+            // Read HTML template
+            const templatePath = path.join(__dirname, '../email-verification.html');
+            let htmlContent = fs.readFileSync(templatePath, 'utf-8');
+
+            // Replace placeholders in the template
+            htmlContent = htmlContent.replace('{{username}}', email);
+            htmlContent = htmlContent.replace('{{Link}}', link);
+
+            // Send verification email
+            const mailOptions = {
+              from: process.env.EMAIL_USER,
+              to: email,
+              subject: "Impact Match Account Email Verification",
+              html: htmlContent,
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+              if (error) {
+                console.log("Error sending verification email:", error);
+              } else {
+                console.log("Verification email sent: " + info.response);
+              }
+            });
+
+            // Return message prompting the user to verify email
+            return res.status(400).json({
+              message: info.message, // 'Please verify your email'
+            });
+          } catch (error) {
+            console.error("Error during email verification process:", error);
+            return res.status(500).json({ error: "Internal server error" });
+          }
+        }
+
+        // Other cases where user is not found
         return res.status(400).json({ message: info.message });
       }
 
