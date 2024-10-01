@@ -9,6 +9,7 @@ import ResetPassword from './ResetPassword';
 import NotFound from './NotFound';
 import EmailVerification from './EmailVerification';
 import VerifySuccess from './VerifySuccess';
+import VerifyResult from './VerifyResult';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/expire-link" element={<ExpiredLink />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/email-verification" element={<EmailVerification />} />
+          <Route path="/verify-result" element={<VerifyResult />} />
           <Route path="/verify-success" element={<VerifySuccess />} />
           <Route path="/404" element={<NotFound />} />
         </Routes>
