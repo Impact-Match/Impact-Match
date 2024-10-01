@@ -33,6 +33,9 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 // Serve Swagger API docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+const cors = require('cors');
+app.use(cors({ origin: 'http://localhost:3000' }));  // Assuming React runs on port 3000
+
 // Middleware for session management
 app.use(
   session({

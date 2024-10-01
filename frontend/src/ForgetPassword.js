@@ -1,20 +1,36 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios'; 
 import LeftSection from './LeftSection';
+import { backend } from './services/service';
 
 const ForgetPassword = () => {
     const [email, setEmail] = useState('');  // State to store the input email
     const [error, setError] = useState('');  // State to store error messages
+    const [success, setSuccess] = useState('');  // State to show success message
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();  // Prevent default form submission behavior
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
         if (!emailPattern.test(email)) {
             setError('Please enter a valid email address.');  // Set error if email format is invalid
         } else {
             setError('');  // Clear error message
-            // Add logic to send reset link here
+            try {
+                // POST request to the backend endpoint
+                const response = await axios.post(backend + '/auth/forgot-password', { email });
+                console.log(response)
+                // If successful, display success message
+                setSuccess(response.data.message);
+                setEmail('');  // Clear email field
+            } catch (err) {
+                if (err.response && err.response.data) {
+                    setError(err.response.data.error);  // Set backend error
+                } else {
+                    setError('Something went wrong. Please try again.');
+                }
+            }
         }
     };
 
@@ -45,6 +61,8 @@ const ForgetPassword = () => {
                             />
                             {/* Error message with red color */}
                             {error && <p className="text-red-500 text-sm mt-1 text-left">{error}</p>}
+                            {/* Success message with green color */}
+                            {success && <p className="text-green-500 text-sm mt-1 text-left">{success}</p>}
                         </div>
 
                         {/* Reset Password Button */}

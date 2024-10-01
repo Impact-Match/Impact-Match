@@ -386,7 +386,7 @@ router.post(
 
     try {
       const token = generateVerificationToken(email); // Fixed typo
-      const resetLink = `http://localhost:8000/auth/reset-password?token=${token}`;
+      const resetLink = `http://localhost:3000/reset-password?token=${token}`;
 
       // Read the HTML template from file
       const templatePath = path.join(__dirname, '../email-password.html');
