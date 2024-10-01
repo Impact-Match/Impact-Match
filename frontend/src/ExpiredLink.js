@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import LeftSection from './LeftSection';
 
-const ExpiredLink = () => {
+const ExpiredLink = ({ message }) => {
     return (
         <div className="flex justify-center items-center h-screen">
             <div className="flex flex-col md:flex-row w-full bg-white">
@@ -15,7 +15,7 @@ const ExpiredLink = () => {
                     <div className="w-[55%]">
                         <h2 className="text-2xl mb-6 text-black font-bold font-inter text-left">Link Expired</h2>
                         <p className="text-sm mb-6 text-gray-500 text-left">
-                            The password reset link has expired. Please request a new one to reset your password.
+                        {message || "The verification link has expired. Please request a new one."}
                         </p>
                     </div>
 

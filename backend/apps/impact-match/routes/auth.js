@@ -143,7 +143,7 @@ router.post(
       );
 
       const token = generateVerificationToken(email);
-      const link = `http://localhost:8000/auth/verify-email?token=${token}`;
+      const link = `http://localhost:3000/verify-result?token=${token}`;
 
       // Read the HTML template from file
       const templatePath = path.join(__dirname, '../email-verification.html');
@@ -312,7 +312,11 @@ router.get("/verify-email", async (req, res) => {
       email,
     ]);
 
-    res.send("Email verified successfully, please login to continue");
+    res.status(200).json({
+      message:
+        "Email verified successfully, please login to continue.",
+    });
+    // res.send("Email verified successfully, please login to continue");
 
     //res.redirect("/login");
   } catch (error) {
