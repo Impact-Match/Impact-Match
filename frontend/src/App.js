@@ -10,7 +10,6 @@ import NotFound from './NotFound';
 import EmailVerification from './EmailVerification';
 import VerifySuccess from './VerifySuccess';
 import VerifyResult from './VerifyResult';
-import Home from './Home';
 
 function App() {
   return (
@@ -19,7 +18,6 @@ function App() {
       <div className="App">
         <NavigationBar />
         <Routes>
-          <Route path="/home" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgetPassword />} />
