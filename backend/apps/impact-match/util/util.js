@@ -12,8 +12,25 @@ async function checkExistUser(email) {
   return false;
 }
 
+async function checkUserNotVerified(email) {
+  const existingUser = await pool.query(
+    "SELECT * FROM users WHERE email = $1",
+    [email]
+  );
+
+  if (existingUser.rows[0].is_verified === false) {
+    return true;
+  }
+
+  return false;
+}
+
 const generateVerificationToken = (email) => {
   return jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
-module.exports = { checkExistUser, generateVerificationToken }; // Export the function for use in other modules
+module.exports = {
+  checkExistUser,
+  generateVerificationToken,
+  checkUserNotVerified,
+}; // Export the function for use in other modules
