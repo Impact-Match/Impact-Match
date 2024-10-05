@@ -4,6 +4,7 @@ import LeftSection from "./LeftSection";
 import emailIcon from "./assets/SendEmail.png";
 import axios from "axios";
 import { useState } from "react";
+import { backend } from "./services/service";
 
 const EmailVerification = () => {
   const location = useLocation();
@@ -24,7 +25,7 @@ const EmailVerification = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/auth/resend-email",
+        backend + "/auth/resend-email",
         user_data
       );
 
@@ -73,6 +74,9 @@ const EmailVerification = () => {
               Click on the link in your email to complete the verification
               process. You may need to check your spam folder.
             </p>
+            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+            {/* Success message with green color */}
+            {successMessage && <p className="text-green-500 text-sm mt-1 text-left">{successMessage}</p>}
           </div>
           <div className="w-[60%] flex justify-between items-center mt-2 text-sm">
             <button
