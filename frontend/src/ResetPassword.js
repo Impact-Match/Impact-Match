@@ -31,8 +31,10 @@ const ResetPassword = () => {
             const response = await axios.post(backend + '/auth/reset-password', { newPassword, token });
 
             // If successful, show success message
-            setSuccess('Password successfully reset.');
-            setError('');  // Clear error message
+            if (response.status === 200) {
+                setSuccess('Password successfully reset.');
+                setError('');  // Clear error message
+            }
         }
     };
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import googleIcon from './assets/google.png';
+import { backend } from './services/service';
 
 const Login = () => {
     const [email, setEmail] = useState('');  // State for storing email input
@@ -40,7 +41,7 @@ const Login = () => {
         }
 
         // Define API endpoint from environment variable
-        const apiUrl = process.env.REACT_APP_API_BASE_URL + '/auth/login';
+        const apiUrl = backend + '/auth/login';
 
         try {
             // Log the data being sent to the API
@@ -51,7 +52,8 @@ const Login = () => {
             const response = await axios.post(apiUrl, {
                 email: trimmedEmail,
                 password: trimmedPassword,
-            });
+            }, 
+            { withCredentials: true });
 
             if (response.status === 200) {
                 setMessage('User logged in successfully');
@@ -60,7 +62,7 @@ const Login = () => {
                 console.log("Response data:", response.data);
 
                 // Jump to /home page after successful login
-                navigate('/home');
+                navigate('/profile');
             }
         } catch (error) {
             console.error('Error during login:', error);
@@ -82,7 +84,7 @@ const Login = () => {
     // Function to handle Google OAuth login
     const handleGoogleLogin = () => {
         // Redirect to the Google OAuth initiation route
-        const googleAuthUrl = `${process.env.REACT_APP_API_BASE_URL}/auth/google`;
+        const googleAuthUrl = backend + `/auth/google`;
         window.location.href = googleAuthUrl;
     };
 

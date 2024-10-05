@@ -52,25 +52,37 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Check if the user exists in the database using the Google ID
+        // Extract the email from the profile
+        const email = profile.emails[0].value; // Get the user's email from the profile
+        const googleId = profile.id; // Get the user's Google ID
+
+        // Check if the user exists in the database using the email
         const result = await pool.query(
-          "SELECT * FROM users WHERE google_id = $1",
-          [profile.id]
+          "SELECT * FROM users WHERE email = $1",
+          [email]
         );
 
         if (result.rows.length === 0) {
-          // If the user doesn't exist, return an error instead of creating a new user
+          // If the user doesn't exist, return an error
           return done(null, false, { message: "User does not exist" });
         }
 
-        // If the user exists, return the existing user
-        return done(null, result.rows[0]); // Return the existing user
+        // User exists, update their Google ID
+        const user = result.rows[0];
+        await pool.query(
+          "UPDATE users SET google_id = $1 WHERE id = $2",
+          [googleId, user.id]
+        );
+
+        // Return the updated user
+        return done(null, user); // Return the updated user object
       } catch (err) {
         return done(err);
       }
     }
   )
 );
+
 
 // Serialize user into the session (works for both local and Google logins)
 passport.serializeUser((user, done) => {

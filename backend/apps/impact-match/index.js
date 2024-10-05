@@ -2,7 +2,8 @@ const express = require("express");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const passport = require("./config/auth"); // Import the passport setup
-const authRoutes = require("./routes/auth"); // Import the Google login routes
+const authRoutes = require("./routes/auth"); // Import the auth routes
+const profileRoutes = require("./routes/profile"); // Import the auth routes
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
@@ -34,7 +35,10 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 const cors = require('cors');
-app.use(cors({ origin: 'http://localhost:3000' }));  // Assuming React runs on port 3000
+app.use(cors({ 
+  origin: process.env.REACT_APP, 
+  credentials: true,
+}));  // Assuming React runs on port 3000
 
 // Middleware for session management
 app.use(
@@ -42,7 +46,11 @@ app.use(
     secret: "yourSecretKey", // Use a strong secret key
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // Set to true in production with HTTPS
+    cookie: {
+      secure: false,  // Set to true in production with HTTPS
+      httpOnly: true,  // Helps prevent cross-site scripting (XSS)
+      maxAge: 1000 * 60 * 60 * 24 * 7,  // 1 day expiration for example
+    },
   })
 );
 
@@ -52,24 +60,9 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session()); // Initialize Passport session
 
-// Middleware to check if the user is authenticated
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect("/"); // Redirect to home if not authenticated
-}
-
 // Routes
-app.use("/auth", authRoutes); // All Google login-related routes go under /auth
-
-app.get("/dashboard", ensureAuthenticated, (req, res) => {
-  if (req.user) {
-    res.send(`Hello, ${req.user.full_name}!`);
-  } else {
-    res.redirect("/"); // Redirect if the user is not authenticated
-  }
-});
+app.use("/auth", authRoutes); // All sign up/login-related routes go under /auth
+app.use("/profile", profileRoutes); 
 
 // Home route
 app.get("/", (req, res) => {

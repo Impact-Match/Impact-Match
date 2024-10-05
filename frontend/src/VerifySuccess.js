@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import icon from './assets/ImpactMatchLogo_Transparent.png';
 import SuccessSendIcon from './assets/SuccessSend.png';
 
