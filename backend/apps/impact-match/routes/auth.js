@@ -58,7 +58,7 @@ router.get(
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
     // Successful authentication, redirect to dashboard
-    res.redirect("http://localhost:3000"); // Redirect to a dashboard or any other route
+    res.redirect(process.env.REACT_APP+"/profile"); // Redirect to a dashboard or any other route
   }
 );
 
@@ -147,10 +147,10 @@ router.post(
       );
 
       const token = generateVerificationToken(email);
-      const link = `http://localhost:3000/verify-result?token=${token}`;
+      const link = process.env.REACT_APP + `/verify-result?token=${token}`;
 
       // Read the HTML template from file
-      const templatePath = path.join(__dirname, "../email-verification.html");
+      const templatePath = path.join(__dirname, "../emails/email-verification.html");
       let htmlContent = fs.readFileSync(templatePath, "utf-8");
 
       // Replace placeholders with dynamic values
@@ -260,10 +260,10 @@ router.post(
 
             // Generate verification token
             const token = generateVerificationToken(email);
-            const link = `http://localhost:3000/verify-result?token=${token}`;
+            const link = process.env.REACT_APP + `/verify-result?token=${token}`;
 
             // Read HTML template
-            const templatePath = path.join(__dirname, '../email-verification.html');
+            const templatePath = path.join(__dirname, '../emails/email-verification.html');
             let htmlContent = fs.readFileSync(templatePath, 'utf-8');
 
             // Replace placeholders in the template
@@ -437,10 +437,10 @@ router.post(
 
     try {
       const token = generateVerificationToken(email); // Fixed typo
-      const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+      const resetLink = process.env.DATABASE_URL + `/reset-password?token=${token}`;
 
       // Read the HTML template from file
-      const templatePath = path.join(__dirname, "../email-password.html");
+      const templatePath = path.join(__dirname, "../emails/email-password.html");
       let htmlContent = fs.readFileSync(templatePath, "utf-8");
 
       // Replace placeholders with dynamic values
@@ -571,10 +571,10 @@ router.post(
 
     try {
       const token = generateVerificationToken(email); // Fixed typo
-      const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+      const resetLink = process.env.DATABASE_URL + `/reset-password?token=${token}`;
 
       // Read the HTML template from file
-      const templatePath = path.join(__dirname, "../email-password.html");
+      const templatePath = path.join(__dirname, "../emails/email-password.html");
       let htmlContent = fs.readFileSync(templatePath, "utf-8");
 
       // Replace placeholders with dynamic values

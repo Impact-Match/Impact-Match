@@ -10,6 +10,7 @@ import NotFound from './NotFound';
 import EmailVerification from './EmailVerification';
 import VerifySuccess from './VerifySuccess';
 import VerifyResult from './VerifyResult';
+import Profile from './Profile';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/email-verification" element={<EmailVerification />} />
           <Route path="/verify-result" element={<VerifyResult />} />
           <Route path="/verify-success" element={<VerifySuccess />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/404" element={<NotFound />} />
         </Routes>
       </div>

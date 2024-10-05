@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import icon from "./assets/ImpactMatchLogo_Transparent.png";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { backend } from './services/service';
 
 const Signup = () => {
   const [userType, setUserType] = useState("student");
@@ -51,7 +52,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/auth/register",
+        backend+"/auth/register",
         user_data
       );
       console.log("response:" + JSON.stringify(response.data));
