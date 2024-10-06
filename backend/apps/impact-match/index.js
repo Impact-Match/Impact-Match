@@ -21,7 +21,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: "http://localhost:8000", // Your API server URL
+        url: process.env.SERVER_URL, // Your API server URL
       },
     ],
   },
@@ -71,6 +71,6 @@ app.get("/", (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-  console.log(`Swagger docs available at http://localhost:${port}/api-docs`);
+  console.log(`Server running at ${process.env.SERVER_URL}:${port}`);
+  console.log(`Swagger docs available at ${process.env.SERVER_URL}/api-docs`);
 });
