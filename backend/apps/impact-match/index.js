@@ -47,7 +47,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: false,  // Set to true in production with HTTPS
+      secure: process.env.PRODUCTION || false,  // Set to true in production with HTTPS
       httpOnly: true,  // Helps prevent cross-site scripting (XSS)
       maxAge: 1000 * 60 * 60 * 24 * 7,  // 1 day expiration for example
     },
