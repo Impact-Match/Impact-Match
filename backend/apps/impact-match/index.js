@@ -40,6 +40,7 @@ app.use(cors({
   credentials: true,
 }));  // Assuming React runs on port 3000
 
+console.log(process.env.PRODUCTION == "true")
 // Middleware for session management
 app.use(
   session({
