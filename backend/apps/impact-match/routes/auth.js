@@ -437,7 +437,7 @@ router.post(
 
     try {
       const token = generateVerificationToken(email); // Fixed typo
-      const resetLink = process.env.DATABASE_URL + `/reset-password?token=${token}`;
+      const resetLink = process.env.REACT_APP + `/reset-password?token=${token}`;
 
       // Read the HTML template from file
       const templatePath = path.join(__dirname, "../emails/email-password.html");
