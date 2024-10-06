@@ -1,1 +1,1 @@
-web: node backend/apps/impact-match/index.js
+web: cd backend/apps/impact-match && bun install && node index.js
