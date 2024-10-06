@@ -61,6 +61,8 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session()); // Initialize Passport session
 
+app.set("trust proxy", 1); 
+
 app.use((req, res, next) => {
   if (req.headers['x-forwarded-proto'] !== 'https') {
     return res.redirect(`https://${req.headers.host}${req.url}`);
