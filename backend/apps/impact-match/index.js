@@ -49,6 +49,7 @@ app.use(
     cookie: {
       secure: process.env.PRODUCTION || false,  // Set to true in production with HTTPS
       maxAge: 1000 * 60 * 60 * 24 * 7,  // 1 day expiration for example
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // None for cross-site in production
     },
   })
 );
