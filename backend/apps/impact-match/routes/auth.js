@@ -55,7 +55,7 @@ router.get(
 // Google OAuth callback route
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/" }),
+  passport.authenticate("google", { failureRedirect: process.env.REACT_APP+"/login" }),
   (req, res) => {
     // Successful authentication, redirect to dashboard
     res.redirect(process.env.REACT_APP+"/profile"); // Redirect to a dashboard or any other route
