@@ -2,7 +2,7 @@ import React from 'react';
 import icon from './assets/ImpactMatchLogo_Transparent.png';
 import SuccessSendIcon from './assets/SuccessSend.png';
 
-const VerifySuccess = () => {
+const VerifySuccess = ({ isNgoVerified, isAdmin }) => {
     return (
         <div className="flex justify-center items-center h-screen w-full">
             <div className="flex flex-col items-center w-full h-full bg-darkBlue p-8">
@@ -15,6 +15,16 @@ const VerifySuccess = () => {
                 </div>
                 
                 <p className="text-sm mb-12 text-white text-center">Your email has been successfully verified</p>
+                {!isNgoVerified && (
+                    <p className="text-sm mb-12 text-yellow-300 text-center">
+                        Email verification successful, but your account still needs NGO admin approval. Please wait for further notification.
+                    </p>
+                )}
+                {isAdmin && (
+                    <p className="text-sm mb-12 text-yellow-300 text-center">
+                        NGO verification successful. You can now log in to your account.
+                    </p>
+                )}
                 
                 {/* Log In Button */}
                 <div className="flex justify-center">
