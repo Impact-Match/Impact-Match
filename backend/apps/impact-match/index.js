@@ -34,13 +34,15 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 // Serve Swagger API docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-const cors = require('cors');
-app.use(cors({ 
-  origin: process.env.REACT_APP, 
-  credentials: true,
-}));  // Assuming React runs on port 3000
+const cors = require("cors");
+app.use(
+  cors({
+    origin: process.env.REACT_APP,
+    credentials: true,
+  })
+); // Assuming React runs on port 3000
 
-console.log(process.env.PRODUCTION == "true")
+console.log(process.env.PRODUCTION == "true");
 // Middleware for session management
 app.use(
   session({
@@ -48,8 +50,8 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: process.env.PRODUCTION == "true",  // Set to true in production with HTTPS
-      maxAge: 1000 * 60 * 60 * 24 * 7,  // 1 day expiration for example
+      secure: process.env.PRODUCTION == "true", // Set to true in production with HTTPS
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 day expiration for example
       sameSite: "None", // None for cross-site in production
     },
   })
@@ -61,18 +63,18 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session()); // Initialize Passport session
 
-app.set("trust proxy", 1); 
+// app.set("trust proxy", 1);
 
-app.use((req, res, next) => {
-  if (req.headers['x-forwarded-proto'] !== 'https') {
-    return res.redirect(`https://${req.headers.host}${req.url}`);
-  }
-  next();
-});
+// app.use((req, res, next) => {
+//   if (req.headers['x-forwarded-proto'] !== 'https') {
+//     return res.redirect(`https://${req.headers.host}${req.url}`);
+//   }
+//   next();
+// });
 
 // Routes
 app.use("/auth", authRoutes); // All sign up/login-related routes go under /auth
-app.use("/profile", profileRoutes); 
+app.use("/profile", profileRoutes);
 
 // Home route
 app.get("/", (req, res) => {
