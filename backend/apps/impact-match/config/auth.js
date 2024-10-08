@@ -100,11 +100,13 @@ passport.use(
 
 // Serialize user into the session (works for both local and Google logins)
 passport.serializeUser((user, done) => {
+  console.log("serilized"+user.id)
   done(null, user.id); // Serialize user ID into session
 });
 
 // Deserialize user from the session (works for both local and Google logins)
 passport.deserializeUser(async (id, done) => {
+  console.log("deserilized"+id)
   try {
     const result = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
 

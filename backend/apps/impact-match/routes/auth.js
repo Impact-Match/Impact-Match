@@ -56,7 +56,7 @@ router.get(
 // Google OAuth callback route
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/" }),
+  passport.authenticate("google", { failureRedirect: process.env.REACT_APP+"/login" }),
   (req, res) => {
     // Successful authentication, redirect to dashboard
     res.redirect(process.env.REACT_APP + "/profile"); // Redirect to a dashboard or any other route
@@ -466,8 +466,7 @@ router.post(
 
     try {
       const token = generateVerificationToken(email); // Fixed typo
-      const resetLink =
-        process.env.DATABASE_URL + `/reset-password?token=${token}`;
+      const resetLink = process.env.REACT_APP + `/reset-password?token=${token}`;
 
       // Read the HTML template from file
       const templatePath = path.join(

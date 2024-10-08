@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import VerifySuccess from './VerifySuccess';
 import ExpiredLink from './ExpiredLink';
+import { backend } from './services/service';
 
 const VerifyResult = () => {
     const [searchParams] = useSearchParams();
@@ -13,7 +14,7 @@ const VerifyResult = () => {
     useEffect(() => {
         const verifyEmail = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/auth/verify-email?token=${token}`);
+                const response = await axios.get( backend + `/auth/verify-email?token=${token}`);
                 if (response.status === 200) {
                     setIsVerified(true); 
                 }
