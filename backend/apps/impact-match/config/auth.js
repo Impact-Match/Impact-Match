@@ -9,22 +9,37 @@ const { v4: uuidv4 } = require("uuid"); // Import the uuid library
 // Local Strategy for Passport (email/password login)
 passport.use(
   new LocalStrategy(
-    { usernameField: "email" }, // Using email instead of the default 'username'
-    async (email, password, done) => {
+    {
+      usernameField: "email",
+      passwordField: "password",
+      passReqToCallback: true,
+    }, // Pass the entire request to the callback
+    async (req, email, password, done) => {
+      const role = req.body.role;
       try {
         // Check if the user exists in the database
         const result = await pool.query(
-          "SELECT * FROM users WHERE email = $1",
-          [email]
+          "SELECT * FROM users WHERE email = $1 AND role = $2",
+          [email, role]
         );
-
         if (result.rows.length === 0) {
           return done(null, false, { message: "Incorrect email or password" });
         }
 
         const user = result.rows[0];
+        // Check if the user's role matches the role sent in the request
+        if (user.role !== role) {
+          return done(null, false, { message: "Unauthorized role" });
+        }
+
         if (user.is_verified === false) {
           return done(null, false, { message: "Please verify your email" });
+        }
+
+        if (role === "ngo" && user.ngo_verify === false) {
+          return done(null, false, {
+            message: "Please contact admin to verify your NGO email",
+          });
         }
         // Compare the hashed password in the database with the provided password
         const isMatch = await bcrypt.compare(password, user.password_hash);
@@ -69,10 +84,10 @@ passport.use(
 
         // User exists, update their Google ID
         const user = result.rows[0];
-        await pool.query(
-          "UPDATE users SET google_id = $1 WHERE id = $2",
-          [googleId, user.id]
-        );
+        await pool.query("UPDATE users SET google_id = $1 WHERE id = $2", [
+          googleId,
+          user.id,
+        ]);
 
         // Return the updated user
         return done(null, user); // Return the updated user object
@@ -82,7 +97,6 @@ passport.use(
     }
   )
 );
-
 
 // Serialize user into the session (works for both local and Google logins)
 passport.serializeUser((user, done) => {

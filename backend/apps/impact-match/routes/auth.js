@@ -8,12 +8,13 @@ const nodeMailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const path = require("path");
-
+require("dotenv").config();
 const {
   checkExistUser,
   generateVerificationToken,
   checkUserNotVerified,
 } = require("../util/util"); // Import the function to check if a user exists
+const e = require("express");
 // Configure the email transporter (using Gmail or any other email service)
 //!!!https://support.google.com/mail/answer/185833?hl=en  create app password for gmail using this as EMAIL_PASSWORD
 const transporter = nodeMailer.createTransport({
@@ -58,7 +59,7 @@ router.get(
   passport.authenticate("google", { failureRedirect: process.env.REACT_APP+"/login" }),
   (req, res) => {
     // Successful authentication, redirect to dashboard
-    res.redirect(process.env.REACT_APP+"/profile"); // Redirect to a dashboard or any other route
+    res.redirect(process.env.REACT_APP + "/profile"); // Redirect to a dashboard or any other route
   }
 );
 
@@ -150,7 +151,10 @@ router.post(
       const link = process.env.REACT_APP + `/verify-result?token=${token}`;
 
       // Read the HTML template from file
-      const templatePath = path.join(__dirname, "../emails/email-verification.html");
+      const templatePath = path.join(
+        __dirname,
+        "../emails/email-verification.html"
+      );
       let htmlContent = fs.readFileSync(templatePath, "utf-8");
 
       // Replace placeholders with dynamic values
@@ -186,7 +190,7 @@ router.post(
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Log in a user
+ *     summary: Log in a user with email, password, and role
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -197,10 +201,16 @@ router.post(
  *             properties:
  *               email:
  *                 type: string
+ *                 description: The user's email address
  *                 example: user@example.com
  *               password:
  *                 type: string
+ *                 description: The user's password (must be at least 6 characters long)
  *                 example: password123
+ *               role:
+ *                 type: string
+ *                 description: The user's role (e.g., 'admin', 'student', 'ngo')
+ *                 example: admin
  *     responses:
  *       200:
  *         description: User logged in successfully
@@ -217,12 +227,18 @@ router.post(
  *                   properties:
  *                     id:
  *                       type: string
+ *                       example: 123e4567-e89b-12d3-a456-426614174000
  *                     email:
  *                       type: string
+ *                       example: user@example.com
+ *                     role:
+ *                       type: string
+ *                       example: admin
  *                     full_name:
  *                       type: string
+ *                       example: John Doe
  *       400:
- *         description: Invalid email or password
+ *         description: Invalid input or incorrect credentials
  *         content:
  *           application/json:
  *             schema:
@@ -231,10 +247,17 @@ router.post(
  *                 message:
  *                   type: string
  *                   example: Incorrect email or password
- *       401:
- *         description: Unauthorized
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       msg:
+ *                         type: string
+ *                         example: Invalid email format
+ *       500:
+ *         description: Internal server error
  */
-
 router.post(
   "/login",
   // Validate input
@@ -242,6 +265,7 @@ router.post(
   body("password")
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long"),
+  body("role").notEmpty().withMessage("Role is required"), // Validate role
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -260,15 +284,19 @@ router.post(
 
             // Generate verification token
             const token = generateVerificationToken(email);
-            const link = process.env.REACT_APP + `/verify-result?token=${token}`;
+            const link =
+              process.env.REACT_APP + `/verify-result?token=${token}`;
 
             // Read HTML template
-            const templatePath = path.join(__dirname, '../emails/email-verification.html');
-            let htmlContent = fs.readFileSync(templatePath, 'utf-8');
+            const templatePath = path.join(
+              __dirname,
+              "../emails/email-verification.html"
+            );
+            let htmlContent = fs.readFileSync(templatePath, "utf-8");
 
             // Replace placeholders in the template
-            htmlContent = htmlContent.replace('{{username}}', email);
-            htmlContent = htmlContent.replace('{{Link}}', link);
+            htmlContent = htmlContent.replace("{{username}}", email);
+            htmlContent = htmlContent.replace("{{Link}}", link);
 
             // Send verification email
             const mailOptions = {
@@ -355,6 +383,7 @@ router.get("/verify-email", async (req, res) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const email = decoded.email;
+    const role = decoded.role;
 
     await pool.query("UPDATE users SET is_verified = true WHERE email = $1", [
       email,
@@ -440,7 +469,10 @@ router.post(
       const resetLink = process.env.REACT_APP + `/reset-password?token=${token}`;
 
       // Read the HTML template from file
-      const templatePath = path.join(__dirname, "../emails/email-password.html");
+      const templatePath = path.join(
+        __dirname,
+        "../emails/email-password.html"
+      );
       let htmlContent = fs.readFileSync(templatePath, "utf-8");
 
       // Replace placeholders with dynamic values
@@ -552,6 +584,55 @@ router.post(
   }
 );
 
+/**
+ * @swagger
+ * /auth/resend-email:
+ *   post:
+ *     summary: Resend a verification email to the user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email address
+ *                 example: user@example.com
+ *     responses:
+ *       200:
+ *         description: Verification email sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Reset link sent to your email. Please check your email to reset your password.
+ *       400:
+ *         description: Invalid email format or user already verified
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: User already verified, no action needed
+ *       500:
+ *         description: Internal server error when sending the email
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Failed to send email
+ */
 router.post(
   "/resend-email",
   body("email").isEmail().withMessage("Invalid email format"),
@@ -570,11 +651,15 @@ router.post(
     }
 
     try {
-      const token = generateVerificationToken(email); // Fixed typo
-      const resetLink = process.env.DATABASE_URL + `/reset-password?token=${token}`;
+      const token = generateVerificationToken(email);
+      const resetLink =
+        process.env.DATABASE_URL + `/reset-password?token=${token}`;
 
       // Read the HTML template from file
-      const templatePath = path.join(__dirname, "../emails/email-password.html");
+      const templatePath = path.join(
+        __dirname,
+        "../emails/email-password.html"
+      );
       let htmlContent = fs.readFileSync(templatePath, "utf-8");
 
       // Replace placeholders with dynamic values
@@ -607,4 +692,252 @@ router.post(
   }
 );
 
+/**
+ * @swagger
+ * /auth/register-ngo:
+ *   post:
+ *     summary: Register a new NGO user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The email address of the user
+ *                 example: ngo@example.com
+ *               password:
+ *                 type: string
+ *                 description: The password for the user (must be at least 6 characters long)
+ *                 example: password123
+ *               full_name:
+ *                 type: string
+ *                 description: The full name of the NGO
+ *                 example: My NGO Organization
+ *               role:
+ *                 type: string
+ *                 description: The role of the user, must be "ngo"
+ *                 example: ngo
+ *     responses:
+ *       201:
+ *         description: NGO user registered successfully and verification email sent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User registered successfully. Please check your email to verify your account.
+ *       400:
+ *         description: Bad request, invalid input or user already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: User already exists
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       msg:
+ *                         type: string
+ *                         example: Invalid email format
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
+ */
+
+router.post(
+  "/register-ngo",
+  // Validate input
+  body("email").isEmail().withMessage("Invalid email format"),
+  body("password")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long"),
+  body("full_name").notEmpty().withMessage("Full name is required"),
+  body("role").notEmpty().withMessage("Role is required"),
+  async (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email, password, full_name, role } = req.body;
+
+    try {
+      if (role !== "ngo") {
+        return res.status(400).json({ error: "this is ngo register endpoint" });
+      }
+      // Check if the user already exists
+      if (await checkExistUser(email)) {
+        return res.status(400).json({ error: "User already exists" });
+      }
+
+      // Hash the password
+      const password_hash = await bcrypt.hash(password, 10);
+
+      // Insert new user into the database
+      await pool.query(
+        "INSERT INTO users (email, password_hash, full_name, role) VALUES ($1, $2, $3, $4)",
+        [email, password_hash, full_name, role]
+      );
+
+      const token = generateVerificationToken(email);
+      const link = process.env.REACT_APP + `/verify-result?token=${token}`;
+      // !! check on this
+      //const adminLink = process.env.REACT_APP + `/verify-ngo?token=${token}`; //need to create front end for this
+      const adminLink =
+        process.env.REACT_APP + `//verify-result?token=${token}`;
+
+      // Read the HTML template from file
+      const userTemplatePath = path.join(
+        __dirname,
+        "../emails/email-verification.html"
+      );
+      let userHtmlContent = fs.readFileSync(userTemplatePath, "utf-8");
+
+      // Read the Admin HTML template from file
+      const adminTemplatePath = path.join(
+        __dirname,
+        "../emails/admin-email-verification.html"
+      );
+      let adminHtmlContent = fs.readFileSync(adminTemplatePath, "utf-8");
+
+      // Replace placeholders with dynamic values
+      htmlContent = userHtmlContent.replace("{{username}}", email);
+      htmlContent = htmlContent.replace("{{Link}}", link);
+
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: "Impact Match Account Email Verification",
+        html: htmlContent,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log(error, "mail snet error");
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+
+      // Replace placeholders with dynamic values
+      htmlContent = adminHtmlContent.replace("{{Email}}", email);
+      htmlContent = htmlContent.replace("{{Link}}", adminLink);
+
+      const adminVerifymailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Impact Match NGO Account Email Verification",
+        html: htmlContent,
+      };
+
+      transporter.sendMail(adminVerifymailOptions, (error, info) => {
+        if (error) {
+          console.log(error, "mail snet error");
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+
+      res.status(201).json({
+        message:
+          "User registered successfully. Please check your email to verify your account.",
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
+
+/**
+ * @swagger
+ * /auth/verify-ngo:
+ *   get:
+ *     summary: Verifies the NGO status of a user using a JWT token
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: query
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The JWT token containing the user's email
+ *     responses:
+ *       200:
+ *         description: Email verified successfully, NGO status updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Email verified successfully, please login to continue.
+ *       400:
+ *         description: Invalid token or error during verification
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Invalid token
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
+ */
+router.get("/verify-ngo", async (req, res) => {
+  const token = req.query.token;
+
+  console.log("token: " + token);
+  if (!token) {
+    return res.status(400).json({ error: "Invalid token" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const email = decoded.email;
+
+    await pool.query("UPDATE users SET ngo_verify = true WHERE email = $1", [
+      email,
+    ]);
+
+    res.status(200).json({
+      message: "NGO verified successfully, please login to continue.",
+    });
+    // res.send("Email verified successfully, please login to continue");
+
+    //res.redirect("/login");
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: "decoded error" });
+  }
+});
 module.exports = router;
