@@ -14,6 +14,7 @@ const Signup = () => {
     password: "",
     name: "",
     dob: "",
+    companyName: "",
   });
 
   const handleUserTypeChange = (type) => {
@@ -51,16 +52,19 @@ const Signup = () => {
     };
 
     try {
+      const endpoint = userType === "student" ? "/auth/register" : "/auth/register-ngo";
       const response = await axios.post(
-        backend+"/auth/register",
+        `${backend}${endpoint}`,
         user_data
       );
-      console.log("response:" + JSON.stringify(response.data));
+      console.log("response:" + JSON.stringify(response.data)); // create logger
 
       if (response.status === 201 && formData.email) {
-        setSuccessMessage(
-          "Registration successful! Please check your email to verify your account."
-        );
+        if (userType === "student") {
+          setSuccessMessage("Registration successful! Please check your email to verify your account.");
+        } else {
+          setSuccessMessage("Registration successful! Please check your email for verification and await NGO admin approval.");
+        }
         navigate("/email-verification", {
           state: { account: formData.email },
         });
@@ -91,9 +95,9 @@ const Signup = () => {
               </button>
               <button
                 className={`w-32 py-1 rounded-sm ${
-                  userType === "organization" ? "bg-lightBlue" : "bg-gray-400"
+                  userType === "ngo" ? "bg-lightBlue" : "bg-gray-400"
                 }`}
-                onClick={() => handleUserTypeChange("organization")}
+                onClick={() => handleUserTypeChange("ngo")}
               >
                 Organization
               </button>
@@ -184,14 +188,18 @@ const Signup = () => {
                 </div>
               </form>
             ) : (
-              <form className="w-full space-y-4">
+              <form className="w-full space-y-4" onSubmit={handleFormSubmit}>
                 <div className="flex flex-col items-center">
                   <label className="text-gray-300 w-[30%] text-left mb-1 ml-10 text-[10px]">
                     PLEASE ENTER YOUR NAME
                   </label>
                   <input
                     type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
                     className="w-[30%] py-1.5 px-2 rounded-2xl bg-gray-100"
+                    required
                   />
                 </div>
                 <div className="flex flex-col items-center">
@@ -200,7 +208,11 @@ const Signup = () => {
                   </label>
                   <input
                     type="text"
+                    name="companyName"
+                    value={formData.companyName}
+                    onChange={handleInputChange}
                     className="w-[30%] py-1.5 px-2 rounded-2xl bg-gray-100"
+                    required
                   />
                 </div>
                 <div className="flex flex-col items-center">
@@ -209,7 +221,11 @@ const Signup = () => {
                   </label>
                   <input
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
                     className="w-[30%] py-1.5 px-2 rounded-2xl bg-gray-100"
+                    required
                   />
                 </div>
                 <div className="flex flex-col items-center">
@@ -218,7 +234,11 @@ const Signup = () => {
                   </label>
                   <input
                     type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
                     className="w-[30%] py-1.5 px-2 rounded-2xl bg-gray-100"
+                    required
                   />
                 </div>
                 <div className="flex justify-center">

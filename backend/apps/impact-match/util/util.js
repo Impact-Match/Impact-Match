@@ -25,8 +25,8 @@ async function checkUserNotVerified(email) {
   return false;
 }
 
-const generateVerificationToken = (email) => {
-  return jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+const generateVerificationToken = (email, role, isNgoRequired, isAdmin) => {
+  return jwt.sign({ email, role, isNgoRequired, isAdmin }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
 module.exports = {

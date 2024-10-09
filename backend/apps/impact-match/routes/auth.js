@@ -374,6 +374,7 @@ router.post(
  */
 router.get("/verify-email", async (req, res) => {
   const token = req.query.token;
+  console.log("req.query" + req.query);
 
   console.log("token: " + token);
   if (!token) {
@@ -382,8 +383,12 @@ router.get("/verify-email", async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("decoded: " + decoded);
     const email = decoded.email;
     const role = decoded.role;
+    const isNgoRequired = decoded.isNgoRequired;
+    console.log("role:" + role);
+    console.log("isNgoRequired:" + isNgoRequired);
 
     await pool.query("UPDATE users SET is_verified = true WHERE email = $1", [
       email,
@@ -391,6 +396,8 @@ router.get("/verify-email", async (req, res) => {
 
     res.status(200).json({
       message: "Email verified successfully, please login to continue.",
+      role: role,
+      isNgoRequired: isNgoRequired,
     });
     // res.send("Email verified successfully, please login to continue");
 
@@ -798,12 +805,13 @@ router.post(
         [email, password_hash, full_name, role]
       );
 
-      const token = generateVerificationToken(email);
+      const token = generateVerificationToken(email, role);
       const link = process.env.REACT_APP + `/verify-result?token=${token}`;
       // !! check on this
       //const adminLink = process.env.REACT_APP + `/verify-ngo?token=${token}`; //need to create front end for this
+      const newToken = generateVerificationToken(email, role, isNgoRequired = true, isAdmin = true);
       const adminLink =
-        process.env.REACT_APP + `//verify-result?token=${token}`;
+        process.env.REACT_APP + `/verify-result?token=${newToken}`;
 
       // Read the HTML template from file
       const userTemplatePath = path.join(
