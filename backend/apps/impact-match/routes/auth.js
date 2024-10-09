@@ -389,9 +389,10 @@ router.get("/verify-email", async (req, res) => {
     const email = decoded.email;
     const role = decoded.role;
     const isNgoRequired = decoded.isNgoRequired;
+    const isAdmin = decoded.isAdmin;
     console.log("/verify-email role:" + role);
     console.log("/verify-email isNgoRequired:" + isNgoRequired);
-
+    console.log("/verify-email isAdmin:" + isAdmin);
     await pool.query("UPDATE users SET is_verified = true WHERE email = $1", [
       email,
     ]);
@@ -400,6 +401,7 @@ router.get("/verify-email", async (req, res) => {
       message: "Email verified successfully, please login to continue.",
       role: role,
       isNgoRequired: isNgoRequired,
+      isAdmin: isAdmin,
     });
     // res.send("Email verified successfully, please login to continue");
 
