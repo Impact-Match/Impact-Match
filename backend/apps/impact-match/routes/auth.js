@@ -56,7 +56,9 @@ router.get(
 // Google OAuth callback route
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: process.env.REACT_APP+"/login" }),
+  passport.authenticate("google", {
+    failureRedirect: process.env.REACT_APP + "/login",
+  }),
   (req, res) => {
     // Successful authentication, redirect to dashboard
     res.redirect(process.env.REACT_APP + "/profile"); // Redirect to a dashboard or any other route
@@ -387,8 +389,8 @@ router.get("/verify-email", async (req, res) => {
     const email = decoded.email;
     const role = decoded.role;
     const isNgoRequired = decoded.isNgoRequired;
-    console.log("role:" + role);
-    console.log("isNgoRequired:" + isNgoRequired);
+    console.log("/verify-email role:" + role);
+    console.log("/verify-email isNgoRequired:" + isNgoRequired);
 
     await pool.query("UPDATE users SET is_verified = true WHERE email = $1", [
       email,
@@ -473,7 +475,8 @@ router.post(
 
     try {
       const token = generateVerificationToken(email); // Fixed typo
-      const resetLink = process.env.REACT_APP + `/reset-password?token=${token}`;
+      const resetLink =
+        process.env.REACT_APP + `/reset-password?token=${token}`;
 
       // Read the HTML template from file
       const templatePath = path.join(
@@ -809,7 +812,10 @@ router.post(
       const link = process.env.REACT_APP + `/verify-result?token=${token}`;
       // !! check on this
       //const adminLink = process.env.REACT_APP + `/verify-ngo?token=${token}`; //need to create front end for this
-      const newToken = generateVerificationToken(email, role, isNgoRequired = true, isAdmin = true);
+      const newToken = generateVerificationToken(email, role, true, true);
+
+      console.log(jwt.decode(newToken));
+      console.log(newToken);
       const adminLink =
         process.env.REACT_APP + `/verify-result?token=${newToken}`;
 
@@ -847,14 +853,14 @@ router.post(
       });
 
       // Replace placeholders with dynamic values
-      htmlContent = adminHtmlContent.replace("{{Email}}", email);
-      htmlContent = htmlContent.replace("{{Link}}", adminLink);
+      adminHtmlContent = adminHtmlContent.replace("{{Email}}", email);
+      adminHtmlContent = adminHtmlContent.replace("{{Link}}", adminLink);
 
       const adminVerifymailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
         subject: "Impact Match NGO Account Email Verification",
-        html: htmlContent,
+        html: adminHtmlContent,
       };
 
       transporter.sendMail(adminVerifymailOptions, (error, info) => {
